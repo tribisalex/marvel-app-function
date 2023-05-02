@@ -1,82 +1,60 @@
 import './charInfo.scss';
-import React, {Component} from "react";
+import React, {useEffect, useState} from "react";
 import MarvelService from "../../services/MarvelService";
 import Skeleton from "../skeleton/Skeleton";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import Spinner from "../spinner/Spinner";
 
-class CharInfo extends Component {
-    state = {
-        char: null,
-        loading: false,
-        error: false,
+const CharInfo = (props) => {
+    let [char, setChar] = useState(null);
+    let [loading, setLoading] = useState(false);
+    let [error, setError] = useState(false);
+
+    const marvelService = new MarvelService();
+
+    useEffect(() => {
+        updateChar();
+    }, [props.charId]);
+
+    const onCharLoaded = (char) => {
+        setChar(char);
+        setLoading(false);
     };
 
-    marvelService = new MarvelService();
-
-    componentDidMount() {
-        // this.updateChar();
-    }
-
-    componentDidUpdate(prevProps) {
-        if (this.props.charId !== prevProps.charId) {
-            this.updateChar();
-        }
-
-        // this.foo.bar = 0;
-    }
-
-    onCharLoaded = (char) => {
-        this.setState({
-            char,
-            loading: false,
-        });
+    const onCharLoading = () => {
+        setLoading(false);
     };
 
-    onCharLoading = () => {
-        this.setState({
-            loading: false,
-        });
+    const onError = () => {
+        setLoading(false);
+        setError(true);
     };
 
-    onError = () => {
-        this.setState({
-            loading: false,
-            error: true,
-        });
-    };
-
-    updateChar = () => {
-        const {charId} = this.props;
+    const updateChar = () => {
+        const {charId} = props;
         if (!charId) {
             return;
         }
-
-        this.onCharLoading();
-
-        this.marvelService
+        onCharLoading();
+        marvelService
         .getCharacter(charId)
-        .then(this.onCharLoaded)
-        .catch(this.onError);
+        .then(onCharLoaded)
+        .catch(onError);
     }
 
-    render() {
-        const {char, loading, error} = this.state;
+    const skeleton = char || loading || error ? null : <Skeleton/>;
+    const errorMessage = error ? <ErrorMessage/> : null;
+    const spinner = loading ? <Spinner/> : null;
+    const content = !(loading || error || !char) ? <View char={char}/> : null;
 
-        const skeleton = char || loading || error ? null : <Skeleton/>;
-        const errorMessage = error ? <ErrorMessage/> : null;
-        const spinner = loading ? <Spinner/> : null;
-        const content = !(loading || error || !char) ? <View char={char}/> : null;
-
-        return (
-          <div className="char__info">
-              {skeleton}
-              {errorMessage}
-              {spinner}
-              {content}
-          </div>
-        );
-    }
+    return (
+      <div className="char__info">
+          {skeleton}
+          {errorMessage}
+          {spinner}
+          {content}
+      </div>
+    );
 }
 
 const View = ({char}) => {
@@ -85,15 +63,17 @@ const View = ({char}) => {
     return (
       <div className="char__info">
           <div className="char__basics">
+
               {
                   thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg'
-                    ? <img src={thumbnail}
+                     ? <img src={thumbnail}
                            style={{objectFit: 'contain'}}
                            alt={name} className="randomchar__img"/>
                     : <img src={thumbnail}
                            style={{objectFit: 'cover'}}
                            alt={name} className="randomchar__img"/>
               }
+
               <div>
                   <div className="char__info-name">{name}</div>
                   <div className="char__btns">
@@ -115,7 +95,6 @@ const View = ({char}) => {
 
               {comics.map((item, i) => {
                   if (i > 9) return;
-
                   return (
                     <li key={i} className="char__comics-item">
                         {item.name}
