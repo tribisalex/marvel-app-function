@@ -50,24 +50,6 @@ const CharSearchForm = () => {
               {errors.nameChar && <span>{errors.nameChar.message}</span>}
             </div>
 
-            {
-              char && char.length !== 0 &&
-              <div className="textMessage">
-                <span style={{ marginRight: '10px'}}>There is! Visit {char[0].name} page?</span>
-                <Link to={`/char/${char[0].id}`}>
-                  <button className="button button__main">
-                    <div className="inner">Visit char</div>
-                  </button>
-                </Link>
-              </div>
-            }
-            {
-              char && char.length === 0 &&
-              <div className="textMessage">
-                The character was not found. Check the name and try again
-              </div>
-            }
-
           </div>
           <button
             type="submit"
@@ -77,7 +59,24 @@ const CharSearchForm = () => {
             <div className="inner">find</div>
           </button>
         </div>
-        <div className="char__search-error"></div>
+
+        {
+          char && char.length !== 0 &&
+          <div className="char__search-error">
+            <span style={{ marginRight: '10px'}}>There is! Visit {char[0].name} page?</span>
+            <Link to={`/char/${char[0].id}`}>
+              <button className="button button__main">
+                <div className="inner">Visit char</div>
+              </button>
+            </Link>
+          </div>
+        }
+        {
+          char && char.length === 0 &&
+          <div className="char__search-error">
+            The character was not found. Check the name and try again
+          </div>
+        }
       </form>
     </div>
   );
