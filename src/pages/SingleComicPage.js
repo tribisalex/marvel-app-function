@@ -1,4 +1,4 @@
-import './singleComicPage.scss';
+import './singlePage.scss';
 import { Link, useParams } from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import useMarvelService from "../services/MarvelService";

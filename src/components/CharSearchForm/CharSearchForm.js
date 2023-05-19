@@ -6,7 +6,7 @@ import {Link} from "react-router-dom";
 
 const CharSearchForm = () => {
   const [char, setChar] = useState(null);
-  const {loading, error, getCharacterByName, clearError} = useMarvelService();
+  const {loading, error, getCharactersByName, clearError} = useMarvelService();
 
   const {
     register,
@@ -17,14 +17,21 @@ const CharSearchForm = () => {
     mode: "onBlur",
   });
 
-  const onSubmit = (data) => {
-    console.log(JSON.stringify(data));
+  const onCharLoaded = (char) => {
+    setChar(char);
+    console.log(char);
+  };
 
+  const onSubmit = (data) => {
+    clearError();
+    getChar(data.nameChar);
     reset();
   }
 
-  //текст для посещения страницы: There is! Visit {char[0].name} page?
-  //текст ошибки: The character was not found. Check the name and try again
+  const getChar = (name) => {
+    clearError();
+    getCharactersByName(name).then(onCharLoaded);
+  }
 
   return (
     <div className="char__search-form">
@@ -42,12 +49,25 @@ const CharSearchForm = () => {
             <div className="error" style={{marginTop: '10px'}}>
               {errors.nameChar && <span>{errors.nameChar.message}</span>}
             </div>
-            <div className="textMessage">
-              There is! Visit  page?
-              <Link to={`/comics/${itemId0}`}>
-                <button>Visit char</button>
-              </Link>
-            </div>
+
+            {
+              char && char.length !== 0 &&
+              <div className="textMessage">
+                <span style={{ marginRight: '10px'}}>There is! Visit {char[0].name} page?</span>
+                <Link to={`/char/${char[0].id}`}>
+                  <button className="button button__main">
+                    <div className="inner">Visit char</div>
+                  </button>
+                </Link>
+              </div>
+            }
+            {
+              char && char.length === 0 &&
+              <div className="textMessage">
+                The character was not found. Check the name and try again
+              </div>
+            }
+
           </div>
           <button
             type="submit"
