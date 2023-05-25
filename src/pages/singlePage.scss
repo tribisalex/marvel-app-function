@@ -1,4 +1,4 @@
-@import '../../style/variables.scss';
+@import '../style/variables';
 
 .single-comic {
     margin-top: 50px;
@@ -25,6 +25,37 @@
         font-size: 24px;
         line-height: 32px;
         color: $main-color;
+        margin-top: 25px;
+    }
+    &__back {
+        justify-self: end;
+        font-weight: bold;
+        font-size: 18px;
+        line-height: 24px;
+        &:hover {
+            color: $main-color;
+        }
+    }
+}
+
+.single-char {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: 300px 450px auto;
+    column-gap: 50px;
+    align-items: start;
+    &__img {
+        width: 300px;
+        height: 320px;
+    }
+    &__name {
+        font-weight: bold;
+        font-size: 22px;
+        line-height: 29px;
+    }
+    &__descr {
+        font-size: 18px;
+        line-height: 24px;
         margin-top: 25px;
     }
     &__back {
